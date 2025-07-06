@@ -94,15 +94,6 @@ export default function Navigation() {
       <Link href="/">
         <Button variant="ghost" className={isMobile ? 'w-full justify-start' : ''}>Home</Button>
       </Link>
-      <Link href="/search">
-        <Button variant="ghost" className={isMobile ? 'w-full justify-start' : ''}>
-          {isMobile ? (
-            <><Users className="mr-2 h-4 w-4" />Discover Users</>
-          ) : (
-            'Users'
-          )}
-        </Button>
-      </Link>
       <Link href="/my-account">
         <Button variant="ghost" className={isMobile ? 'w-full justify-start' : ''}>My Account</Button>
       </Link>
