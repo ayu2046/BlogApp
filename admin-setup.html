@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Setup - BlogApp</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #1a1a1a;
+            color: #fff;
+        }
+        .container {
+            background-color: #2a2a2a;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .success {
+            color: #28a745;
+            margin: 10px 0;
+        }
+        .info {
+            background-color: #333;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .warning {
+            color: #ffc107;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>BlogApp Admin Setup</h1>
+        <p>This script will create an admin user account for your BlogApp.</p>
+        
+        <div class="info">
+            <strong>Admin Credentials:</strong><br>
+            Email: admin@blogapp.com<br>
+            Username: admin<br>
+            Password: admin1234
+        </div>
+        
+        <button onclick="createAdminUser()">Create Admin User</button>
+        <button onclick="checkExistingUsers()">Check Existing Users</button>
+        <button onclick="clearAllData()">Clear All Data</button>
+        
+        <div id="result"></div>
+        
+        <div class="warning">
+            <strong>Instructions:</strong><br>
+            1. Click "Create Admin User" to add the admin account<br>
+            2. Open your BlogApp in the browser<br>
+            3. Log in with admin@blogapp.com / admin1234<br>
+            4. The admin link will appear in the navigation
+        </div>
+    </div>
+
+    <script>
+        function createAdminUser() {
+            const adminUser = {
+                id: 'admin-' + Date.now(),
+                username: 'admin',
+                email: 'admin@blogapp.com',
+                password: 'admin1234',
+                fullName: 'System Administrator',
+                profilePicture: null,
+                createdAt: new Date().toISOString()
+            };
+
+            // Get existing users or create empty array
+            let users = JSON.parse(localStorage.getItem('blogapp_users') || '[]');
+            
+            // Check if admin already exists
+            const adminExists = users.some(user => 
+                user.username === 'admin' || user.email === 'admin@blogapp.com'
+            );
+
+            if (adminExists) {
+                document.getElementById('result').innerHTML = 
+                    '<div class="warning">Admin user already exists!</div>';
+                return;
+            }
+
+            // Add admin user
+            users.push(adminUser);
+            localStorage.setItem('blogapp_users', JSON.stringify(users));
+
+            document.getElementById('result').innerHTML = 
+                '<div class="success">✅ Admin user created successfully!</div>' +
+                '<p>You can now log in to your BlogApp with:</p>' +
+                '<p><strong>Email:</strong> admin@blogapp.com<br>' +
+                '<strong>Password:</strong> admin1234</p>';
+        }
+
+        function checkExistingUsers() {
+            const users = JSON.parse(localStorage.getItem('blogapp_users') || '[]');
+            const result = document.getElementById('result');
+            
+            if (users.length === 0) {
+                result.innerHTML = '<div class="info">No users found in localStorage.</div>';
+                return;
+            }
+
+            let userList = '<div class="info"><strong>Existing Users:</strong><br>';
+            users.forEach((user, index) => {
+                userList += `${index + 1}. ${user.username} (${user.email})<br>`;
+            });
+            userList += '</div>';
+            
+            result.innerHTML = userList;
+        }
+
+        function clearAllData() {
+            if (confirm('Are you sure you want to clear all BlogApp data? This will remove all users, posts, and comments.')) {
+                localStorage.removeItem('blogapp_users');
+                localStorage.removeItem('blogapp_posts');
+                localStorage.removeItem('blogapp_comments');
+                localStorage.removeItem('blogapp_feedbacks');
+                
+                document.getElementById('result').innerHTML = 
+                    '<div class="warning">⚠️ All BlogApp data has been cleared!</div>';
+            }
+        }
+
+        // Auto-check users on page load
+        window.onload = function() {
+            checkExistingUsers();
+        };
+    </script>
+</body>
+</html>
